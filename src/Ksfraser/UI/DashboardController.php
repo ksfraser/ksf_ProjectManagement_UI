@@ -19,13 +19,15 @@ class DashboardController
 {
     private ProjectServiceInterface $projectService;
     private HTMLBuilder $html;
+    private string $templateDir;
 
     public function __construct(
         ContainerInterface $container,
-        private readonly string $templateDir
+        string $templateDir
     ) {
         $this->projectService = $container->get(ProjectServiceInterface::class);
         $this->html = new HTMLBuilder();
+        $this->templateDir = $templateDir;
     }
 
     public function index(): string

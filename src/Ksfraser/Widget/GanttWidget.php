@@ -90,8 +90,8 @@ class GanttWidget
             }
         }
 
-        $startDate = $task->getStartDate()?->format('Y-m-d') ?? date('Y-m-d');
-        $endDate = $task->getEndDate()?->format('Y-m-d') ?? date('Y-m-d', strtotime('+1 day'));
+        $startDate = $task->getStartDate() ? $task->getStartDate()->format('Y-m-d') : date('Y-m-d');
+        $endDate = $task->getEndDate() ? $task->getEndDate()->format('Y-m-d') : date('Y-m-d', strtotime('+1 day'));
 
         return [
             'id' => 'task_' . $task->getTaskId(),
@@ -124,13 +124,16 @@ class GanttWidget
 
     private function getStatusClass(string $status): string
     {
-        return match ($status) {
-            'Completed' => 'gantt-task-completed',
-            'In Progress' => 'gantt-task-in-progress',
-            'On Hold' => 'gantt-task-on-hold',
-            'Not Started' => 'gantt-task-not-started',
-            default => '',
-        };
+        if ($status === 'Completed') {
+            return 'gantt-task-completed';
+        } elseif ($status === 'In Progress') {
+            return 'gantt-task-in-progress';
+        } elseif ($status === 'On Hold') {
+            return 'gantt-task-on-hold';
+        } elseif ($status === 'Not Started') {
+            return 'gantt-task-not-started';
+        }
+        return '';
     }
 
     public function toJson(array $ganttData): string

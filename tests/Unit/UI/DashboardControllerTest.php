@@ -118,14 +118,14 @@ class DashboardControllerTest extends TestCase
     private function createMockContainer(): object
     {
         return new class implements \Psr\Container\ContainerInterface {
-            public function get(string $id): mixed
+            public function get(string $id)
             {
-                return match ($id) {
-                    \Ksfraser\ProjectManagement\Contract\ProjectServiceInterface::class => new class implements \Ksfraser\ProjectManagement\Contract\ProjectServiceInterface {
+                if ($id === \Ksfraser\ProjectManagement\Contract\ProjectServiceInterface::class) {
+                    return new class implements \Ksfraser\ProjectManagement\Contract\ProjectServiceInterface {
                         public function getAllProjects(): array { return []; }
-                        public function getProject(string $id): mixed { return null; }
-                        public function createProject(array $data): mixed { return null; }
-                        public function updateProject(string $id, array $data): mixed { return null; }
+                        public function getProject(string $id) { return null; }
+                        public function createProject(array $data) { return null; }
+                        public function updateProject(string $id, array $data) { return null; }
                         public function deleteProject(string $id): void {}
                         public function getProjectsByStatus(string $status): array { return []; }
                         public function getProjectTasks(string $projectId): array { return []; }
@@ -136,12 +136,14 @@ class DashboardControllerTest extends TestCase
                         public function getOverdueTaskCount(): int { return 3; }
                         public function getRecentProjects(int $limit): array { return []; }
                         public function getOverdueTasks(int $limit): array { return []; }
-                    },
-                    \Ksfraser\HTML\HTMLBuilder::class => new class {
+                    };
+                }
+                if ($id === \Ksfraser\HTML\HTMLBuilder::class) {
+                    return new class {
                         public function div(array $attrs): string { return '<div></div>'; }
-                    },
-                    default => null,
-                };
+                    };
+                }
+                return null;
             }
             public function has(string $id): bool { return true; }
         };

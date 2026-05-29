@@ -23,13 +23,15 @@ class ProjectApiController
 {
     private ProjectServiceInterface $projectService;
     private Response $response;
+    private string $basePath;
 
     public function __construct(
         ContainerInterface $container,
-        private readonly string $basePath = '/api/projects'
+        string $basePath = '/api/projects'
     ) {
         $this->projectService = $container->get(ProjectServiceInterface::class);
         $this->response = $container->get(Response::class);
+        $this->basePath = $basePath;
     }
 
     public function handle(Request $request): void
@@ -37,7 +39,7 @@ class ProjectApiController
         $path = $request->getPath();
         $method = $request->getMethod();
 
-        if (str_starts_with($path, $this->basePath . '/')) {
+        if (strpos($path, $this->basePath . '/') === 0) {
             $id = substr($path, strlen($this->basePath) + 1);
             $this->handleSingle($id, $method, $request);
             return;
